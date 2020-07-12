@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>DCCon Converter for ChatAssistX 1.8.0.0</title>
+<script src="https://cdn.jsdelivr.net/jquery/1.12.4/jquery.min.js"></script>
+<style>
+.container {
+  height: 600px;
+  width: 100%;
+  display: flex;
+  flex-direction: column; 
+ } 
+
+.container textarea {
+  box-sizing: border-box; /* fit parent width */
+  height: 100%;
+}
+
+.container button {
+  box-sizing: border-box; /* fit parent width */
+  width: 100%;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <textarea id="txtDCCon"></textarea>
+  <div class="btn-wrapper">
+    <button id="btnConvert" onclick="doConvert();">변환하기!</button>
+  </div>
+</div>
+<script>
+function doConvert() {
+	original = JSON.parse(document.getElementById("txtDCCon").value);
+	newlist = {};
+	$.each(original, function(index, value) {
+		if(typeof newlist[value] === 'undefined') {
+			newlist[value] = [];
+		}
+		
+		newlist[value].push(index);
+	});
+	
+	newlist_js = [];
+	$.each(newlist, function(index, value) {
+		name = index.match(/[^\/]+\.[a-z]+$/)[0];
+		newlist_js.push('  {"name":"' + name + '", "uri":"' + index + '", "keywords":' + JSON.stringify(value) + ', "tags":["변환됨"]}');
+	});
+	
+	document.getElementById("txtDCCon").value = "dcConsData = [\n" + newlist_js.join(",\n") + "\n];";
+}
+</script>
+</body>
+</html>
